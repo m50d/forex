@@ -18,7 +18,12 @@ import forex.services.rates.OneForgeLookupFailed
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-case class OneForgeQuote(symbol: String, price: BigDecimal, timestamp: Long)
+case class OneForgeQuote(symbol: String, price: BigDecimal, timestamp: Long) {
+  def asRate: Either[String, Rate] =
+    RatePair.fromSymbol(symbol) map {
+      rp => Rate(rp, Price(price), Timestamp(OffsetDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault())))
+    }
+}
 
 class OneForgeLive[F[_] : ConcurrentEffect](config: OneForgeConfig) extends RatesServiceAlgebra[F] {
   val quotesUri: Uri = Uri.uri("https://forex.1forge.com/1.0.3/quotes")
@@ -30,10 +35,7 @@ class OneForgeLive[F[_] : ConcurrentEffect](config: OneForgeConfig) extends Rate
     BlazeClientBuilder[F](global).resource.use { client =>
       client.fetch[RatesServiceError Either Rate](request) {
         case Status.Successful(r) => r.attemptAs[Seq[OneForgeQuote]].leftMap(mf => OneForgeLookupFailed(mf.message): RatesServiceError)
-          .map { case Seq(ofq) => Rate(RatePair.fromSymbol(ofq.symbol),
-            Price(ofq.price), Timestamp(OffsetDateTime.ofInstant(Instant.ofEpochSecond(ofq.timestamp), ZoneId.systemDefault()))
-          )
-          }
+          .subflatMap { case Seq(ofq) => ofq.asRate.leftMap(OneForgeLookupFailed(_)) }
           .value
         case r => r.as[String].map(b => Left(OneForgeLookupFailed(s"Status ${r.status.code}, body $b")))
       }
