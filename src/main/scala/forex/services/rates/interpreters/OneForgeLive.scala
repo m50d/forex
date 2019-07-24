@@ -1,7 +1,5 @@
 package forex.services.rates.interpreters
 
-import java.time.{Instant, OffsetDateTime, ZoneId}
-
 import cats.effect.ConcurrentEffect
 import cats.syntax.functor._
 import cats.syntax.either._
