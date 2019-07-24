@@ -13,6 +13,9 @@
 
   * Generally I kept things as simple/minimal-effort as possible.
   I used existing libraries for the HTTP client and caching.
+  Max cache size is hardcoded for the time being;
+  I would only add a configuration parameter if and when there was a
+  clear need for it. 
   * I tried to keep the code close to the existing style
   in terms of using final tagless etc.
   However I did  rename the repeated types with the same name
