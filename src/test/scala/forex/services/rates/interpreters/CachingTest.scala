@@ -1,18 +1,26 @@
 package forex.services.rates.interpreters
 
-import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 
 import cats.Id
+import cats.effect.Clock
 import forex.domain.{Price, Rate, RatePair, Timestamp}
 import forex.services.Caches
 import forex.services.rates.{OneForgeRequestError, RatesServiceAlgebra}
-import org.junit.Test
 import org.easymock.EasyMock._
-import scalacache.modes.sync._
 import org.junit.Assert.assertEquals
+import org.junit.Test
+import scalacache.modes.sync._
+
+import scala.concurrent.duration.TimeUnit
 
 class CachingTest {
   @Test def basicFunctionality(): Unit = {
+    val nowForTest = ZonedDateTime.parse("2019-05-06T12:34:17Z")
+    implicit object StubClock extends Clock[Id] {
+      override def realTime(unit: TimeUnit): Id[Long] = nowForTest.toInstant.getEpochSecond
+      override def monotonic(unit: TimeUnit): Id[Long] = ???
+    }
     implicit val cache = Caches.guavaRates
     val mockAlgebra = mock[RatesServiceAlgebra[Id]](classOf[RatesServiceAlgebra[Id]])
     val caching = new Caching[Id](mockAlgebra)
@@ -23,10 +31,10 @@ class CachingTest {
 
     val error = Left(OneForgeRequestError("Test error"))
     val success = Right(Rate(RatePair.fromSymbol("EURUSD").right.get, Price(4L),
-      Timestamp(OffsetDateTime.MAX.minusDays(1)))
-    )
+      Timestamp(nowForTest.minusMinutes(1).toOffsetDateTime)
+    ))
     val expiredSuccess = Right(Rate(RatePair.fromSymbol("USDJPY").right.get, Price(4L),
-      Timestamp(OffsetDateTime.now().minusMinutes(6)))
+      Timestamp(nowForTest.minusMinutes(6).toOffsetDateTime))
     )
     expect(mockAlgebra.get(eurusd)).andReturn(error).andReturn(success)
     expect(mockAlgebra.get(usdjpy)).andReturn(success)
