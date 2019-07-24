@@ -25,6 +25,8 @@ class RatesHttpRoutes[F[_] : Sync](rates: RatesProgram[F]) extends Http4sDsl[F] 
         case Left(SystemOrProgrammingError(msg)) =>
           Sync[F].delay(log.error(msg)) *> InternalServerError(msg)
       }
+    case GET -> Root =>
+      BadRequest("""Missing or invalid "from" or "to" currencies""")
   }
 
   val routes: HttpRoutes[F] = Router(
