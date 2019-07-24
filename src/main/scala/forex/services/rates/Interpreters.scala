@@ -7,5 +7,5 @@ import interpreters._
 
 object Interpreters {
   def dummy[F[_]: Applicative](): RatesServiceAlgebra[F] = new OneForgeDummy[F]()
-  def live[F[_]: ConcurrentEffect](config: OneForgeConfig): RatesServiceAlgebra[F] = new OneForgeLive[F](config)
+  def liveDirect[F[_]: ConcurrentEffect](config: OneForgeConfig): RatesServiceAlgebra[F] = new OneForgeLive[F](config)
 }
