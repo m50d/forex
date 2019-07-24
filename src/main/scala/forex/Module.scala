@@ -9,29 +9,18 @@ import org.http4s._
 import org.http4s.implicits._
 import org.http4s.server.middleware.{AutoSlash, Timeout}
 
-class Module[F[_]: ConcurrentEffect: Timer](config: ApplicationConfig) {
-
-  private val ratesService: RatesService[F] = RatesServices.live[F](config.oneforge)
-
-  private val ratesProgram: RatesProgram[F] = RatesProgram[F](ratesService)
-
-  private val ratesHttpRoutes: HttpRoutes[F] = new RatesHttpRoutes[F](ratesProgram).routes
-
+class Module[F[_] : ConcurrentEffect : Timer](config: ApplicationConfig) {
   type PartialMiddleware = HttpRoutes[F] => HttpRoutes[F]
-  type TotalMiddleware   = HttpApp[F] => HttpApp[F]
+  type TotalMiddleware = HttpApp[F] => HttpApp[F]
 
-  private val routesMiddleware: PartialMiddleware = {
-    { http: HttpRoutes[F] =>
-      AutoSlash(http)
-    }
+  private[this] val ratesService: RatesService[F] = RatesServices.live[F](config.oneforge)
+  private[this] val ratesProgram: RatesProgram[F] = RatesProgram[F](ratesService)
+  private[this] val ratesHttpRoutes: HttpRoutes[F] = new RatesHttpRoutes[F](ratesProgram).routes
+  private[this] val routesMiddleware: PartialMiddleware = {
+    { http: HttpRoutes[F] => AutoSlash(http) }
   }
-
-  private val appMiddleware: TotalMiddleware = { http: HttpApp[F] =>
-    Timeout(config.http.timeout)(http)
-  }
-
-  private val http: HttpRoutes[F] = ratesHttpRoutes
+  private[this] val appMiddleware: TotalMiddleware = { http: HttpApp[F] => Timeout(config.http.timeout)(http) }
+  private[this] val http: HttpRoutes[F] = ratesHttpRoutes
 
   val httpApp: HttpApp[F] = appMiddleware(routesMiddleware(http).orNotFound)
-
 }

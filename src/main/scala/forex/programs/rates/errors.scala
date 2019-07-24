@@ -1,5 +1,5 @@
 package forex.programs.rates
 
-sealed trait RatesProgramError extends Exception
-
-final case class RateLookupFailed(msg: String) extends Exception(msg) with RatesProgramError
+sealed trait RatesProgramError
+final case class InvalidRequest(msg: String) extends RatesProgramError
+final case class SystemOrProgrammingError(msg: String) extends RatesProgramError
