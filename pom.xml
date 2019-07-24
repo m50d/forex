@@ -74,62 +74,62 @@
         </dependency>
         <dependency>
             <groupId>org.typelevel</groupId>
-            <artifactId>cats-core_2.12</artifactId>
+            <artifactId>cats-core${scala.suffix}</artifactId>
             <version>1.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.typelevel</groupId>
-            <artifactId>cats-effect_2.12</artifactId>
+            <artifactId>cats-effect${scala.suffix}</artifactId>
             <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>co.fs2</groupId>
-            <artifactId>fs2-core_2.12</artifactId>
+            <artifactId>fs2-core${scala.suffix}</artifactId>
             <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>org.http4s</groupId>
-            <artifactId>http4s-dsl_2.12</artifactId>
+            <artifactId>http4s-dsl${scala.suffix}</artifactId>
             <version>0.20.0-M1</version>
         </dependency>
         <dependency>
             <groupId>org.http4s</groupId>
-            <artifactId>http4s-blaze-server_2.12</artifactId>
+            <artifactId>http4s-blaze-server${scala.suffix}</artifactId>
             <version>0.20.0-M1</version>
         </dependency>
         <dependency>
             <groupId>org.http4s</groupId>
-            <artifactId>http4s-circe_2.12</artifactId>
+            <artifactId>http4s-circe${scala.suffix}</artifactId>
             <version>0.20.0-M1</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
-            <artifactId>circe-core_2.12</artifactId>
+            <artifactId>circe-core${scala.suffix}</artifactId>
             <version>0.11.1</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
-            <artifactId>circe-generic_2.12</artifactId>
+            <artifactId>circe-generic${scala.suffix}</artifactId>
             <version>0.11.1</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
-            <artifactId>circe-generic-extras_2.12</artifactId>
+            <artifactId>circe-generic-extras${scala.suffix}</artifactId>
             <version>0.11.1</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
-            <artifactId>circe-parser_2.12</artifactId>
+            <artifactId>circe-parser${scala.suffix}</artifactId>
             <version>0.11.1</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
-            <artifactId>circe-java8_2.12</artifactId>
+            <artifactId>circe-java8${scala.suffix}</artifactId>
             <version>0.11.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.pureconfig</groupId>
-            <artifactId>pureconfig_2.12</artifactId>
+            <artifactId>pureconfig${scala.suffix}</artifactId>
             <version>0.10.2</version>
         </dependency>
         <dependency>
@@ -139,19 +139,19 @@
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.12</artifactId>
+            <artifactId>scalatest${scala.suffix}</artifactId>
             <version>3.0.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.scalacheck</groupId>
-            <artifactId>scalacheck_2.12</artifactId>
+            <artifactId>scalacheck${scala.suffix}</artifactId>
             <version>1.14.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.chrisdavenport</groupId>
-            <artifactId>cats-scalacheck_2.12</artifactId>
+            <artifactId>cats-scalacheck${scala.suffix}</artifactId>
             <version>0.1.1</version>
             <scope>test</scope>
         </dependency>
