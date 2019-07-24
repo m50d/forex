@@ -7,6 +7,6 @@ import scalacache.guava._
 
 
 object Caches {
-  def guava: Cache[Rate] =
+  def guavaRates: Cache[Rate] =
     GuavaCache(CacheBuilder.newBuilder().maximumSize(10000L).build[String, Entry[Rate]])
 }
