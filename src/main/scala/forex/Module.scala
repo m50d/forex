@@ -11,7 +11,7 @@ import org.http4s.server.middleware.{AutoSlash, Timeout}
 
 class Module[F[_]: ConcurrentEffect: Timer](config: ApplicationConfig) {
 
-  private val ratesService: RatesService[F] = RatesServices.live[F]
+  private val ratesService: RatesService[F] = RatesServices.live[F](config.oneforge)
 
   private val ratesProgram: RatesProgram[F] = RatesProgram[F](ratesService)
 

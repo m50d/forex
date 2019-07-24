@@ -10,5 +10,7 @@ object Rate {
   final case class Pair(
       from: Currency,
       to: Currency
-  )
+  ) {
+    def asSymbol = from.toString + to.toString
+  }
 }
