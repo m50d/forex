@@ -44,6 +44,10 @@
   that actually use `InvalidRequest`.
   The case of an invalid currency code is handled by an explicit route
   because that was a case I encountered myself when manually testing.
+  Cases where a currency code is known-to-us but not supported by 1forge
+  might be a good case for `InvalidRequest`;
+  I assumed the given `Currency` values are known to be supported
+  and did *not* test every case myself.
   * "4xx" errors should send details to the client in most cases, IMO.
   A "5xx" error represents an unanticipated situation so that decision
   is more dependent on what the audience is -
