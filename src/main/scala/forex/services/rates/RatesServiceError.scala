@@ -1,5 +1,8 @@
 package forex.services.rates
 
-sealed trait RatesServiceError
+import forex.programs.rates.{RateLookupFailed, RatesProgramError}
 
-final case class OneForgeLookupFailed(msg: String) extends RatesServiceError
+sealed abstract class RatesServiceError(msg: String) {
+  def toProgramError: RatesProgramError = RateLookupFailed(msg)
+}
+final case class OneForgeLookupFailed(msg: String) extends RatesServiceError(msg)
