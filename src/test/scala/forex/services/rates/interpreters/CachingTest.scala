@@ -30,14 +30,15 @@ class CachingTest {
     )
     expect(mockAlgebra.get(eurusd)).andReturn(error).andReturn(success)
     expect(mockAlgebra.get(usdjpy)).andReturn(success)
-    expect(mockAlgebra.get(eurjpy)).andReturn(expiredSuccess).andReturn(expiredSuccess)
+    expect(mockAlgebra.get(eurjpy)).andReturn(expiredSuccess).andReturn(success)
     replay(mockAlgebra)
     assertEquals(error, caching.get(eurusd))
     assertEquals(success, caching.get(eurusd))
     assertEquals(success, caching.get(usdjpy))
     assertEquals(success, caching.get(usdjpy))
     assertEquals(expiredSuccess, caching.get(eurjpy))
-    assertEquals(expiredSuccess, caching.get(eurjpy))
+    assertEquals(success, caching.get(eurjpy))
+    assertEquals(success, caching.get(eurjpy))
     verify(mockAlgebra)
   }
 }
