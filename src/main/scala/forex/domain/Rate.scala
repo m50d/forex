@@ -1,24 +1,13 @@
 package forex.domain
 
-case class Rate(
-                 pair: Rate.Pair,
-                 price: Price,
-                 timestamp: Timestamp
-               )
+case class Rate(pair: RatePair, price: Price, timestamp: Timestamp)
 
-object Rate {
+final case class RatePair(from: Currency, to: Currency) {
+  def asSymbol = from.toString + to.toString
+}
 
-  final case class Pair(
-                         from: Currency,
-                         to: Currency
-                       ) {
-    def asSymbol = from.toString + to.toString
+object RatePair {
+  def fromSymbol(s: String) = s.grouped(3).toSeq match {
+    case Seq(from, to) => RatePair(Currency.fromString(from), Currency.fromString(to))
   }
-
-  object Pair {
-    def fromSymbol(s: String) = s.grouped(3).toSeq match {
-      case Seq(from, to) => Pair(Currency.fromString(from), Currency.fromString(to))
-    }
-  }
-
 }
