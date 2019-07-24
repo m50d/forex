@@ -4,7 +4,7 @@ import forex.services.rates.{OneForgeLookupFailed, RatesServiceError}
 
 sealed trait RatesProgramError extends Exception
 
-final case class RateLookupFailed(msg: String) extends RatesProgramError
+final case class RateLookupFailed(msg: String) extends Exception(msg) with RatesProgramError
 
 object errors {
 
