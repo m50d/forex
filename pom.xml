@@ -11,14 +11,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.suffix>_2.12</scala.suffix>
     </properties>
-    <repositories>
-        <repository>
-            <id>SonatypeOSSSnapshots</id>
-            <name>Sonatype OSS Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
     <build>
         <plugins>
             <plugin>
