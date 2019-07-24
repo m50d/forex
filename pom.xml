@@ -8,6 +8,8 @@
     <description>forex</description>
     <version>0.1-SNAPSHOT</version>
     <properties>
+        <circe.version>0.11.1</circe.version>
+        <http4s.version>0.20.0-M1</http4s.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.suffix>_2.12</scala.suffix>
     </properties>
@@ -95,42 +97,47 @@
         <dependency>
             <groupId>org.http4s</groupId>
             <artifactId>http4s-dsl${scala.suffix}</artifactId>
-            <version>0.20.0-M1</version>
+            <version>${http4s.version}</version>
         </dependency>
         <dependency>
             <groupId>org.http4s</groupId>
             <artifactId>http4s-blaze-server${scala.suffix}</artifactId>
-            <version>0.20.0-M1</version>
+            <version>${http4s.version}</version>
         </dependency>
         <dependency>
             <groupId>org.http4s</groupId>
             <artifactId>http4s-circe${scala.suffix}</artifactId>
-            <version>0.20.0-M1</version>
+            <version>${http4s.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.http4s</groupId>
+            <artifactId>http4s-blaze-client${scala.suffix}</artifactId>
+            <version>${http4s.version}</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <artifactId>circe-core${scala.suffix}</artifactId>
-            <version>0.11.1</version>
+            <version>${circe.version}</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <artifactId>circe-generic${scala.suffix}</artifactId>
-            <version>0.11.1</version>
+            <version>${circe.version}</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <artifactId>circe-generic-extras${scala.suffix}</artifactId>
-            <version>0.11.1</version>
+            <version>${circe.version}</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <artifactId>circe-parser${scala.suffix}</artifactId>
-            <version>0.11.1</version>
+            <version>${circe.version}</version>
         </dependency>
         <dependency>
             <groupId>io.circe</groupId>
             <artifactId>circe-java8${scala.suffix}</artifactId>
-            <version>0.11.1</version>
+            <version>${circe.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.pureconfig</groupId>
@@ -141,24 +148,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest${scala.suffix}</artifactId>
-            <version>3.0.7</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scalacheck</groupId>
-            <artifactId>scalacheck${scala.suffix}</artifactId>
-            <version>1.14.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.chrisdavenport</groupId>
-            <artifactId>cats-scalacheck${scala.suffix}</artifactId>
-            <version>0.1.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
