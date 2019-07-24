@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.m50d</groupId>
     <artifactId>forex</artifactId>
@@ -7,8 +8,7 @@
     <description>forex</description>
     <version>0.1-SNAPSHOT</version>
     <properties>
-        <http4s.version>0.20.1</http4s.version>
-        <main.class>users.Main</main.class>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.suffix>_2.12</scala.suffix>
     </properties>
     <repositories>
@@ -48,6 +48,19 @@
                         -language:higherKinds
                         -language:existentials
                         -Ypartial-unification
+                        -language:experimental.macros
+                        -language:implicitConversions
+                        -unchecked
+                        -Xfatal-warnings
+                        -Xfuture
+                        -Xlint
+                        -Ydelambdafy:method
+                        -Xlog-reflective-calls
+                        -Yno-adapted-args
+                        -Ywarn-dead-code
+                        -Ywarn-inaccessible
+                        -Ywarn-unused-import
+                        -Ywarn-value-discard
                         -Dkp:genAsciiNames=true
                     </zincOptionsScala>
                 </configuration>
@@ -64,8 +77,8 @@
                     </execution>
                 </executions>
             </plugin>
-            </plugins>
-            </build>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
