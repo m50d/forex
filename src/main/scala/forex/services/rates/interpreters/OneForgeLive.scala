@@ -19,6 +19,8 @@ case class OneForgeQuote(symbol: String, price: BigDecimal, timestamp: Long) {
   def asRate: Either[String, Rate] =
     RatePair.fromSymbol(symbol) map { rp =>
       Rate(rp, Price(price), Timestamp(OffsetDateTime.ofInstant(Instant.ofEpochSecond(timestamp),
+        // Not clear what zone is appropriate here since the 1Forge API simply offers an Instant
+        // But this is the API we were given
         ZoneId.systemDefault())))
     }
 }

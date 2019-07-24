@@ -12,6 +12,7 @@
         <http4s.version>0.20.0-M1</http4s.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <scala.suffix>_2.12</scala.suffix>
+        <scalacache.version>0.28.0</scalacache.version>
     </properties>
     <build>
         <plugins>
@@ -148,6 +149,16 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.cb372</groupId>
+            <artifactId>scalacache-guava${scala.suffix}</artifactId>
+            <version>${scalacache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.cb372</groupId>
+            <artifactId>scalacache-cats-effect${scala.suffix}</artifactId>
+            <version>${scalacache.version}</version>
         </dependency>
     </dependencies>
 </project>
