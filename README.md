@@ -65,6 +65,10 @@
   correct behaviour as an implementation without the cache would.
   I also did a manual test of caching behaviour
   against the number of requests shown as used on the 1forge account.
+  Usually I would try to use non-mock-based call/result unit tests
+  to check any pure business logic that was complex enough to have
+  potential errors; however I don't think any such complex logic was
+  warranted here.
   * The current implementation doesn't cache any failed calls.
   This can be a difficult judgement call as it would be easy to hit
   the call limits on 1forge due to repeated requests if we e.g. had
