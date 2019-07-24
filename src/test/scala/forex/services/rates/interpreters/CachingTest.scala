@@ -18,19 +18,26 @@ class CachingTest {
     val caching = new Caching[Id](mockAlgebra)
 
     val eurusd = RatePair.fromSymbol("EURUSD").right.get
-    val usdjpy = RatePair.fromSymbol("EURJPY").right.get
+    val usdjpy = RatePair.fromSymbol("USDJPY").right.get
+    val eurjpy = RatePair.fromSymbol("EURJPY").right.get
 
     val error = Left(OneForgeRequestError("Test error"))
     val success = Right(Rate(RatePair.fromSymbol("EURUSD").right.get, Price(4L),
       Timestamp(OffsetDateTime.MAX.minusDays(1)))
     )
+    val expiredSuccess = Right(Rate(RatePair.fromSymbol("USDJPY").right.get, Price(4L),
+      Timestamp(OffsetDateTime.now().minusMinutes(6)))
+    )
     expect(mockAlgebra.get(eurusd)).andReturn(error).andReturn(success)
     expect(mockAlgebra.get(usdjpy)).andReturn(success)
+    expect(mockAlgebra.get(eurjpy)).andReturn(expiredSuccess).andReturn(expiredSuccess)
     replay(mockAlgebra)
     assertEquals(error, caching.get(eurusd))
     assertEquals(success, caching.get(eurusd))
     assertEquals(success, caching.get(usdjpy))
     assertEquals(success, caching.get(usdjpy))
+    assertEquals(expiredSuccess, caching.get(eurjpy))
+    assertEquals(expiredSuccess, caching.get(eurjpy))
     verify(mockAlgebra)
   }
 }
