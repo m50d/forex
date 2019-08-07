@@ -9,6 +9,7 @@ import cats.syntax.flatMap._
 import cats.syntax.functor._
 import cats.syntax.traverse._
 import forex.domain.Rate
+import forex.services.rates.oneforge.OneForgeService
 import scalacache._
 
 import scala.concurrent.duration._

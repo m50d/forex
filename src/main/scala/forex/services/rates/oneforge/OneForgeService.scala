@@ -1,4 +1,4 @@
-package forex.services.rates.populator
+package forex.services.rates.oneforge
 
 import cats.effect.{ConcurrentEffect, Sync}
 import cats.instances.either._
@@ -9,7 +9,6 @@ import cats.syntax.functor._
 import cats.syntax.traverse._
 import forex.config.OneForgeConfig
 import forex.domain.{Price, Rate, RatePair, Timestamp}
-import forex.services.rates._
 import io.circe.generic.auto._
 import org.http4s.circe._
 import org.http4s.client.blaze.BlazeClientBuilder

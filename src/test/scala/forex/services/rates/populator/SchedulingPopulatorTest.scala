@@ -6,7 +6,7 @@ import cats.Id
 import cats.effect.Clock
 import forex.domain.{Price, Rate, RatePair, Timestamp}
 import forex.services.Caches
-import forex.services.rates.OneForgeRequestError
+import forex.services.rates.oneforge.{OneForgeRequestError, OneForgeService}
 import org.easymock.EasyMock._
 import org.junit.Test
 import scalacache.modes.sync._

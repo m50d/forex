@@ -4,6 +4,7 @@ import cats.effect.{ExitCode, IO, IOApp}
 import forex.config.ApplicationConfig
 import forex.domain.Rate
 import forex.services.Caches
+import forex.services.rates.oneforge.OneForgeService
 import pureconfig.generic.auto._
 import scalacache.Cache
 import scalacache.CatsEffect.modes.async

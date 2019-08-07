@@ -6,8 +6,9 @@ import forex.domain.Rate
 import forex.http.rates.RatesHttpRoutes
 import forex.programs._
 import forex.services._
+import forex.services.rates.oneforge.OneForgeService
 import forex.services.rates.interpreters.CacheRetrieving
-import forex.services.rates.populator.{OneForgeService, SchedulingPopulator}
+import forex.services.rates.populator.SchedulingPopulator
 import org.http4s._
 import org.http4s.implicits._
 import org.http4s.server.middleware.{AutoSlash, Timeout}
