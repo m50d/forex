@@ -14,4 +14,10 @@ object RatePair {
     case Seq(to, from) => (Currency.fromString(from), Currency.fromString(to)).mapN(RatePair.apply)
     case _ => Left(s"Unknown symbol $s")
   }
+
+  val all = for {
+    from ← Currency.all
+    to ← Currency.all
+    if (from != to)
+  } yield apply(from, to)
 }

@@ -1,15 +1,18 @@
-package forex.services.rates.interpreters
+package forex.services.rates.populator
 
 import cats.effect.ConcurrentEffect
-import cats.syntax.functor._
+import cats.instances.either._
+import cats.instances.vector._
 import cats.syntax.either._
+import cats.syntax.functor._
+import cats.syntax.traverse._
 import forex.config.OneForgeConfig
 import forex.domain.{Price, Rate, RatePair, Timestamp}
 import forex.services.rates._
 import io.circe.generic.auto._
+import org.http4s.circe._
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.{Method, Request, Status, Uri}
-import org.http4s.circe._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -18,23 +21,23 @@ case class OneForgeQuote(symbol: String, price: BigDecimal, timestamp: Long) {
     RatePair.fromSymbol(symbol) map { rp => Rate(rp, Price(price), Timestamp(timestamp)) }
 }
 
-class OneForgeLive[F[_] : ConcurrentEffect](config: OneForgeConfig) extends RatesServiceAlgebra[F] {
+class OneForgeService[F[_] : ConcurrentEffect](config: OneForgeConfig) {
   val quotesUri: Uri = Uri.uri("https://forex.1forge.com/1.0.3/quotes")
 
-  override def get(pair: RatePair): F[RatesServiceError Either Rate] = {
-    val uri = quotesUri.withQueryParam("pairs", pair.asSymbol).withQueryParam("api_key", config.apikey): Uri
+  def get(pairs: Vector[RatePair]): F[RatesServiceError Either Vector[Rate]] = {
+    val pairsParam = pairs.mkString(",")
+    val uri = quotesUri.withQueryParam("pairs", pairsParam).withQueryParam("api_key", config.apikey): Uri
     val request = Request[F](method = Method.GET, uri = uri)
-    implicit val decoder = jsonOf[F, Seq[OneForgeQuote]]
+    implicit val decoder = jsonOf[F, Vector[OneForgeQuote]]
     BlazeClientBuilder[F](global).resource.use { client =>
-      client.fetch[RatesServiceError Either Rate](request) {
+      client.fetch[RatesServiceError Either Vector[Rate]](request) {
         case Status.Successful(r) =>
-          r.attemptAs[Seq[OneForgeQuote]].leftMap[RatesServiceError](mf => OneForgeJsonParsingFailed(mf.message))
-            .subflatMap {
-              case Seq(ofq) => ofq.asRate.leftMap(FailedToConvertOneForgeResponseToDomainObject(_))
-              case x => Left(FailedToConvertOneForgeResponseToDomainObject(s"Expected one response but got $x"))
-            }.value
+          r.attemptAs[Vector[OneForgeQuote]].leftMap[RatesServiceError](mf => OneForgeJsonParsingFailed(mf.message))
+            .subflatMap(_.traverse(_.asRate.leftMap(FailedToConvertOneForgeResponseToDomainObject(_)))).value
         case r => r.as[String].map(b => Left(OneForgeRequestError(s"Status ${r.status.code}, body $b")))
       }
     }
   }
+
+  def getAll = get(RatePair.all)
 }

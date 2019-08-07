@@ -52,4 +52,6 @@ object Currency {
     case x => Left(s"Unknown currency $x")
   }
 
+  val all = Vector(AUD, CAD, CHF, EUR, GBP, NZD, JPY, SGD, USD)
+
 }

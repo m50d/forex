@@ -9,4 +9,5 @@ sealed trait RatesServiceError {
 final case class OneForgeRequestError(msg: String) extends RatesServiceError
 final case class OneForgeJsonParsingFailed(msg: String) extends RatesServiceError
 final case class FailedToConvertOneForgeResponseToDomainObject(msg: String) extends RatesServiceError
+final case class RateNotAvailable() extends RatesServiceError
 

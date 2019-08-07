@@ -6,7 +6,7 @@ import forex.domain.Rate
 import forex.http.rates.RatesHttpRoutes
 import forex.programs._
 import forex.services._
-import forex.services.rates.interpreters.Caching
+import forex.services.rates.interpreters.CacheRetrieving
 import org.http4s._
 import org.http4s.implicits._
 import org.http4s.server.middleware.{AutoSlash, Timeout}
@@ -18,8 +18,7 @@ class Module[F[_] : ConcurrentEffect : Timer: Mode](config: ApplicationConfig) {
 
   private[this] implicit val cache: Cache[Rate] = Caches.guavaRates
 
-  private[this] val ratesServiceDirect: RatesService[F] = RatesServices.liveDirect[F](config.oneforge)
-  private[this] val ratesService: RatesService[F] = new Caching[F](ratesServiceDirect)
+  private[this] val ratesService: RatesService[F] = new CacheRetrieving[F]
   private[this] val ratesProgram: RatesProgram[F] = RatesProgram[F](ratesService)
   private[this] val ratesHttpRoutes: HttpRoutes[F] = new RatesHttpRoutes[F](ratesProgram).routes
   private[this] val routesMiddleware: PartialMiddleware = {
