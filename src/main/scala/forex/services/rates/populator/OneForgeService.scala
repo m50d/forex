@@ -25,7 +25,7 @@ case class OneForgeQuote(symbol: String, price: BigDecimal, timestamp: Long) {
 class OneForgeService[F[_] : ConcurrentEffect](config: OneForgeConfig) {
   val quotesUri: Uri = Uri.uri("https://forex.1forge.com/1.0.3/quotes")
 
-  def get(pairs: Vector[RatePair]): F[RatesServiceError Either Vector[Rate]] = {
+  def get(pairs: Vector[RatePair]): F[OneForgeServiceError Either Vector[Rate]] = {
     val pairsParam = pairs.map(_.asSymbol).mkString(",")
     val uri = quotesUri.withQueryParam("pairs", pairsParam).withQueryParam("api_key", config.apikey): Uri
     val request = Request[F](method = Method.GET, uri = uri)
@@ -33,9 +33,9 @@ class OneForgeService[F[_] : ConcurrentEffect](config: OneForgeConfig) {
     // On a larger system, would want to use a "real" log library. But println is good enough for current use case
     Sync[F].delay(println(s"Running fetch for $pairs")) *>
       BlazeClientBuilder[F](global).resource.use { client =>
-        client.fetch[RatesServiceError Either Vector[Rate]](request) {
+        client.fetch[OneForgeServiceError Either Vector[Rate]](request) {
           case Status.Successful(r) =>
-            r.attemptAs[Vector[OneForgeQuote]].leftMap[RatesServiceError](mf => OneForgeJsonParsingFailed(mf.message))
+            r.attemptAs[Vector[OneForgeQuote]].leftMap[OneForgeServiceError](mf => OneForgeJsonParsingFailed(mf.message))
               .subflatMap(_.traverse(_.asRate.leftMap(FailedToConvertOneForgeResponseToDomainObject(_)))).value
           case r => r.as[String].map(b => Left(OneForgeRequestError(s"Status ${r.status.code}, body $b")))
         }
