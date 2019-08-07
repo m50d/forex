@@ -13,6 +13,7 @@ import io.circe.generic.auto._
 import org.http4s.circe._
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.{Method, Request, Status, Uri}
+import org.slf4j.LoggerFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -22,15 +23,17 @@ case class OneForgeQuote(symbol: String, price: BigDecimal, timestamp: Long) {
 }
 
 class OneForgeService[F[_] : ConcurrentEffect](config: OneForgeConfig) {
-  val quotesUri: Uri = Uri.uri("https://forex.1forge.com/1.0.3/quotes")
+  // Could be moved to config, as and when we had a use case for changing this
+  private[this] val quotesUri: Uri = Uri.uri("https://forex.1forge.com/1.0.3/quotes")
+
+  private[this] val log = LoggerFactory.getLogger(getClass)
 
   def get(pairs: Vector[RatePair]): F[OneForgeServiceError Either Vector[Rate]] = {
     val pairsParam = pairs.map(_.asSymbol).mkString(",")
     val uri = quotesUri.withQueryParam("pairs", pairsParam).withQueryParam("api_key", config.apikey): Uri
     val request = Request[F](method = Method.GET, uri = uri)
     implicit val decoder = jsonOf[F, Vector[OneForgeQuote]]
-    // On a larger system, would want to use a "real" log library. But println is good enough for current use case
-    Sync[F].delay(println(s"Running fetch for $pairs")) *>
+    Sync[F].delay(log.info(s"Running fetch for $pairs")) *>
       BlazeClientBuilder[F](global).resource.use { client =>
         client.fetch[OneForgeServiceError Either Vector[Rate]](request) {
           case Status.Successful(r) =>

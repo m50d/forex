@@ -23,6 +23,7 @@ class RatesHttpRoutes[F[_] : Sync](rates: RatesProgram[F]) extends Http4sDsl[F] 
         case Right(rate) => Ok(rate.asGetApiResponse)
         case Left(InvalidRequest(msg)) => BadRequest(msg)
         case Left(SystemOrProgrammingError(msg)) =>
+          // In a "real" system, would want some kind of alerting system (e.g. alert if x errors in y minutes)
           Sync[F].delay(log.error(msg)) *> InternalServerError(msg)
       }
     case GET -> Root =>
