@@ -56,13 +56,25 @@
   * For code that does not contain any business logic and is well typed,
   I relied solely on a manual (Postman) "smoke test" as I suspect the only
   possible errors would be misunderstandings of interfaces etc.
-  (e.g. I reversed the order of `from`/`to` based on a manual
-  sanity check -
+  (e.g. I reversed the order of `from`/`to` based on a manual sanity check -
   I don't think there would be any value in a unit test for that)
   * Usually I would try to use non-mock-based call/result unit tests
-  to check any pure business logic that was complex enough to have
-  potential errors; however I don't think any such complex logic was
-  warranted here.
-  * The current implementation doesn't cache any failed calls and schedules them for a retry after 1 minute. This way
-  even if we are continuously retrying we will only perform 2880 requests/day to 1forge, staying within the 5000
-  requests/day limit.
+  to check any pure business logic that was complex enough to have potential errors.
+  In this case the cache populator was the only component that had any logic
+  that I felt the need to test.
+  Since I had an existing mock-based test from my previous efforts,
+  I found it easier to adapt that test to the new design.
+  Thus the current test is mock-based.
+  * The cache populator is somewhat tightly coupled to the OneForge service -
+  there is no interface between them and the populator does have access to
+  OneForge-specific error types (even if it only logs them at present).
+  I would introduce an interface as and when we had more than one implementation
+  (which goes hand in hand with the previous point -
+  for a non-mock test I would likely want a stub implementation)
+  but when we only have one implementation I think the (code) overhead
+  of an extra layer would outweigh the advantages.
+  * The current implementation doesn't cache any failed calls
+  and schedules them for a retry after 30 seconds.
+  This way even if we are continuously retrying,
+  we will only perform 2880 requests/day to 1forge,
+  staying within the 5000 requests/day limit.
