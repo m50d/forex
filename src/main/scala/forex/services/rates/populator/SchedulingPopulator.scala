@@ -15,15 +15,17 @@ import scala.concurrent.duration._
 
 class SchedulingPopulator[F[_] : Sync : Mode : Timer](oneForgeService: OneForgeService[F])(implicit
   cache: Cache[Rate]) {
-  // might consider exponential backoff etc.
-  val retryTimeAfterError = 30 seconds
+  // Some or all of these values could be moved to config, as and when we had a use case for changing them
   val desiredMaxAge = 5 minutes
   val assumedMaxFetchTime = 30 seconds
   val ageAtWhichToFetch = desiredMaxAge - assumedMaxFetchTime;
+  // Exponential backoff or similar might be appropriate in a "real" system. Would likely be driven by what kind of
+  // error behaviour we saw from 1forge
+  val retryTimeAfterError = 30 seconds
 
   def stepOnce: F[FiniteDuration] = oneForgeService.getAll flatMap {
     case Left(error) ⇒
-      // Would consider logging system, alerting etc.
+      // In a "real" system, would want some kind of alerting system (e.g. alert if x errors in y minutes)
       Sync[F].delay(System.err.println(error)).map(_ ⇒ retryTimeAfterError)
     case Right(results) ⇒ for {
       oldestResult <- results.traverse {

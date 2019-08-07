@@ -30,6 +30,7 @@ class OneForgeService[F[_] : ConcurrentEffect](config: OneForgeConfig) {
     val uri = quotesUri.withQueryParam("pairs", pairsParam).withQueryParam("api_key", config.apikey): Uri
     val request = Request[F](method = Method.GET, uri = uri)
     implicit val decoder = jsonOf[F, Vector[OneForgeQuote]]
+    // On a larger system, would want to use a "real" log library. But println is good enough for current use case
     Sync[F].delay(println(s"Running fetch for $pairs")) *>
       BlazeClientBuilder[F](global).resource.use { client =>
         client.fetch[RatesServiceError Either Vector[Rate]](request) {
