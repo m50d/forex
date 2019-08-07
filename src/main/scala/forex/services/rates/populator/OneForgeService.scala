@@ -25,7 +25,7 @@ class OneForgeService[F[_] : ConcurrentEffect](config: OneForgeConfig) {
   val quotesUri: Uri = Uri.uri("https://forex.1forge.com/1.0.3/quotes")
 
   def get(pairs: Vector[RatePair]): F[RatesServiceError Either Vector[Rate]] = {
-    val pairsParam = pairs.mkString(",")
+    val pairsParam = pairs.map(_.asSymbol).mkString(",")
     val uri = quotesUri.withQueryParam("pairs", pairsParam).withQueryParam("api_key", config.apikey): Uri
     val request = Request[F](method = Method.GET, uri = uri)
     implicit val decoder = jsonOf[F, Vector[OneForgeQuote]]

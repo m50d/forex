@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit
 import cats.Monad
 import cats.effect.{Sync, Timer}
 import cats.instances.vector._
-import cats.syntax.apply._
 import cats.syntax.flatMap._
 import cats.syntax.functor._
 import cats.syntax.traverse._
@@ -35,5 +34,5 @@ class SchedulingPopulator[F[_] : Sync : Mode : Timer](oneForgeService: OneForgeS
     } yield ageAtWhichToFetch - currentAge
   }
 
-  def go: F[Nothing] = Monad[F].tailRecM(())(_ ⇒ stepOnce.flatMap(Timer[F].sleep).map(_ ⇒ Left(())))
+  def go: F[Nothing] = Monad[F].tailRecM[Unit, Nothing](())(_ ⇒ stepOnce.flatMap(Timer[F].sleep).map(_ ⇒ Left(())))
 }
