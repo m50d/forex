@@ -32,11 +32,6 @@
   and there would likely be less call for adding more dependencies,
   but for this test I wanted dependency management out of the way
   so that I could focus on the coding.
-  * I assumed that the "free tier" of 1forge meant the free trial of the
-  starter tier, as that was the only free option I saw.
-  I made use of the first API on the page since it seemed like it might
-  work, and the results seem good enough so I see no value in changing
-  it (even though I've now seen a "simpler" API further down the page).
   * With error handling I tried to draw a distinction
   between known/expected errors (`InvalidRequest`)
   and unexpected exceptions (`SystemOrProgrammingError`).
@@ -61,33 +56,13 @@
   * For code that does not contain any business logic and is well typed,
   I relied solely on a manual (Postman) "smoke test" as I suspect the only
   possible errors would be misunderstandings of interfaces etc.
-  (e.g. I just reversed the order of `from`/`to` based on a manual
+  (e.g. I reversed the order of `from`/`to` based on a manual
   sanity check -
   I don't think there would be any value in a unit test for that)
-  * I wrote a mock-based unit test for the caching service
-  as that was the area where I had the least confidence.
-  While I'm not normally a fan of mock-based tests,
-  I found it was the easiest way to test that the cache was actually
-  caching results, since the nature of a cache is to produce similarly
-  correct behaviour as an implementation without the cache would.
-  I also did a manual test of caching behaviour
-  against the number of requests shown as used on the 1forge account.
-  Usually I would try to use non-mock-based call/result unit tests
+  * Usually I would try to use non-mock-based call/result unit tests
   to check any pure business logic that was complex enough to have
   potential errors; however I don't think any such complex logic was
   warranted here.
-  * The current implementation doesn't cache any failed calls.
-  This can be a difficult judgement call as it would be easy to hit
-  the call limits on 1forge due to repeated requests if we e.g. had
-  an error in our parsing logic. However if there is a genuine error
-  with the 1forge responses then we certainly don't want to cache those.
-  * This implementation caches quotes for 5 minutes
-  (the maximum permitted by the requirements), meaning that it will make
-  at most 720 requests/day for a given currency pair.
-  So as long as at most ~7 currency pairs are requested frequently,
-  this service will be able to stay within the 5000 requests/day limit
-  of the 1forge free tier. A more sophisticated implementation could
-  batch up several currency pairs into each 1forge request, or make use
-  of cached quotes for one currency pair to quote the reverse pair.
-  However I don't think any such more complex logic is justified by
-  the requirements currently given.
+  * The current implementation doesn't cache any failed calls and schedules them for a retry after 1 minute. This way
+  even if we are continuously retrying we will only perform 2880 requests/day to 1forge, staying within the 5000
+  requests/day limit.

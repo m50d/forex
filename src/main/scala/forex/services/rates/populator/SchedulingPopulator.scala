@@ -21,6 +21,7 @@ class SchedulingPopulator[F[_] : Sync : Mode : Timer](oneForgeService: OneForgeS
   private[this] val desiredMaxAge = 5 minutes
   private[this] val assumedMaxFetchTime = 30 seconds
   private[this] val ageAtWhichToFetch = desiredMaxAge - assumedMaxFetchTime;
+  // 30 seconds means we will stay within the 5000 requests/day limit even if every request is erroring
   // Exponential backoff or similar might be appropriate in a "real" system. Would likely be driven by what kind of
   // error behaviour we saw from 1forge
   private[this] val retryTimeAfterError = 30 seconds
