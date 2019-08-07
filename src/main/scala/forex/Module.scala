@@ -7,6 +7,7 @@ import forex.http.rates.RatesHttpRoutes
 import forex.programs._
 import forex.services._
 import forex.services.rates.interpreters.CacheRetrieving
+import forex.services.rates.populator.{OneForgeService, SchedulingPopulator}
 import org.http4s._
 import org.http4s.implicits._
 import org.http4s.server.middleware.{AutoSlash, Timeout}
@@ -18,6 +19,7 @@ class Module[F[_] : ConcurrentEffect : Timer: Mode](config: ApplicationConfig) {
 
   private[this] implicit val cache: Cache[Rate] = Caches.guavaRates
 
+  private[this] val oneForgeService: OneForgeService[F] = new OneForgeService[F](config.oneforge)
   private[this] val ratesService: RatesService[F] = new CacheRetrieving[F]
   private[this] val ratesProgram: RatesProgram[F] = RatesProgram[F](ratesService)
   private[this] val ratesHttpRoutes: HttpRoutes[F] = new RatesHttpRoutes[F](ratesProgram).routes
@@ -27,5 +29,6 @@ class Module[F[_] : ConcurrentEffect : Timer: Mode](config: ApplicationConfig) {
   private[this] val appMiddleware: TotalMiddleware = { http: HttpApp[F] => Timeout(config.http.timeout)(http) }
   private[this] val http: HttpRoutes[F] = ratesHttpRoutes
 
+  val populator: SchedulingPopulator[F] = new SchedulingPopulator[F](oneForgeService)
   val httpApp: HttpApp[F] = appMiddleware(routesMiddleware(http).orNotFound)
 }

@@ -2,6 +2,7 @@ package forex.services.rates.populator
 
 import java.util.concurrent.TimeUnit
 
+import cats.Monad
 import cats.effect.{Sync, Timer}
 import cats.instances.vector._
 import cats.syntax.apply._
@@ -34,5 +35,5 @@ class SchedulingPopulator[F[_] : Sync : Mode : Timer](oneForgeService: OneForgeS
     } yield ageAtWhichToFetch - currentAge
   }
 
-  def go: F[Unit] = stepOnce.flatMap(Timer[F].sleep) *> go
+  def go: F[Unit] = Monad[F].tailRecM(())(_ ⇒ stepOnce.flatMap(Timer[F].sleep).map(_ ⇒ Left(())))
 }

@@ -8,6 +8,7 @@ import org.http4s.server.blaze.BlazeServerBuilder
 import scalacache.Mode
 
 object Main extends IOApp {
+
   import scalacache.CatsEffect.modes.async
 
   override def run(args: List[String]): IO[ExitCode] =
@@ -20,11 +21,11 @@ class Application[F[_] : ConcurrentEffect : Timer : Mode] {
   def stream: Stream[F, Unit] =
     for {
       config <- Config.stream("app")
-      module = new Module[F](config)
+      module = new Module[F](config);
       _ <- BlazeServerBuilder[F]
         .bindHttp(config.http.port, config.http.host)
         .withHttpApp(module.httpApp)
-        .serve
+        .serve.concurrently(Stream.emit(module.populator.go))
     } yield ()
 
 }
