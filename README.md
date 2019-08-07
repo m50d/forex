@@ -59,7 +59,7 @@
   In this case I included error details for ease of debugging,
   but would flag that up to reassess if "productionising".
   * For code that does not contain any business logic and is well typed,
-  I relied solely on a manual "smoke test" as I suspect the only
+  I relied solely on a manual (Postman) "smoke test" as I suspect the only
   possible errors would be misunderstandings of interfaces etc.
   (e.g. I just reversed the order of `from`/`to` based on a manual
   sanity check -
