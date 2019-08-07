@@ -22,7 +22,7 @@ class Application[F[_] : ConcurrentEffect : Timer : Mode] {
     for {
       config ← Config.stream("app")
       module = new Module[F](config)
-      _ ← Stream.emit(Concurrent[F].start(module.populator.go))
+      _ ← Stream.eval(Concurrent[F].start[Nothing](module.populator.go))
       _ ← BlazeServerBuilder[F]
         .bindHttp(config.http.port, config.http.host)
         .withHttpApp(module.httpApp)
