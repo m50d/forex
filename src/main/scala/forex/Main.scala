@@ -20,12 +20,13 @@ class Application[F[_] : ConcurrentEffect : Timer : Mode] {
 
   def stream: Stream[F, Unit] =
     for {
-      config <- Config.stream("app")
-      module = new Module[F](config);
-      _ <- BlazeServerBuilder[F]
+      config ← Config.stream("app")
+      module = new Module[F](config)
+      _ ← Stream.emit(Concurrent[F].start(module.populator.go))
+      _ ← BlazeServerBuilder[F]
         .bindHttp(config.http.port, config.http.host)
         .withHttpApp(module.httpApp)
-        .serve.concurrently(Stream.emit(module.populator.go))
+        .serve
     } yield ()
 
 }

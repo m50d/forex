@@ -35,5 +35,5 @@ class SchedulingPopulator[F[_] : Sync : Mode : Timer](oneForgeService: OneForgeS
     } yield ageAtWhichToFetch - currentAge
   }
 
-  def go: F[Unit] = Monad[F].tailRecM(())(_ ⇒ stepOnce.flatMap(Timer[F].sleep).map(_ ⇒ Left(())))
+  def go: F[Nothing] = Monad[F].tailRecM(())(_ ⇒ stepOnce.flatMap(Timer[F].sleep).map(_ ⇒ Left(())))
 }
