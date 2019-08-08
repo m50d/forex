@@ -78,3 +78,23 @@
   This way even if we are continuously retrying,
   we will only perform 2880 requests/day to 1forge,
   staying within the 5000 requests/day limit.
+  * If the cache is not updated, we return (potentially stale) results
+  rather than an error to the client.
+  Since the result includes a timestamp,
+  the client can make its own judgement
+  in this scenario.
+  So I think this is better than representing
+  results older than 5 minutes as an error.
+  * In a realistic deployment scenario I would want
+  some kind of monitoring/supervisor
+  for the cache populating fiber,
+  particularly if the server was left running
+  for long periods
+  (e.g. including a liveness check in
+  a server health check HTTP endpoint).
+  The code for this would likely
+  be specific to the deployment model
+  we were using -
+  for running locally on a development machine,
+  regular log lines provide adequate confidence
+  that the fiber really is running.
